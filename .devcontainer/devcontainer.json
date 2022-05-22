@@ -1,0 +1,15 @@
+{
+    "name": "Embedded simulation platform development",
+    "image": "esimp:latest",
+    "extensions": [
+        "ms-vscode.cpptools",
+        "trond-snekvik.devicetree",
+        "trond-snekvik.kconfig-lang",
+        "editorconfig.editorconfig",
+        "mhutchie.git-graph"
+    ],
+    "remoteUser": "user",
+    "remoteEnv": {"SHELL": "/bin/bash"},
+    "workspaceMount": "source=${localWorkspaceFolder},target=/home/user/workspace/esimp,type=bind,consistency=delegated",
+    "workspaceFolder": "/home/user/workspace/esimp"
+}
