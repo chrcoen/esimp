@@ -8,9 +8,9 @@ extern double square_root(int n);
 
 class Application : public esimp::Application_if {
  public:
-  void run_main() override;
-  void run_thread(esimp::RTOSThread_if *thread, const char *name,
-                  const void *pdata) override;
+  void run_main(esimp::Thread_if *thread) override;
+  void run_thread(esimp::Thread_if *thread, const char *name,
+                  void *pdata) override;
   void run_isr(esimp::IRQ_if *irq) override;
 
  private:
@@ -19,14 +19,14 @@ class Application : public esimp::Application_if {
 static Application app;
 static esimp::MCU_if *mcu;
 
-void Application::run_main() {
+void Application::run_main(esimp::Thread_if *thread) {
   mcu->log("Bootloader start");
   mcu->busy_wait_ns(2e9);
   mcu->exit(esimp::ExitAction::Reset, 1);
 }
 
-void Application::run_thread(esimp::RTOSThread_if *thread, const char *name,
-                             const void *pdata) {
+void Application::run_thread(esimp::Thread_if *thread, const char *name,
+                             void *pdata) {
   assert(0);
 }
 

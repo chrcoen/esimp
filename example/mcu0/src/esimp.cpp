@@ -8,9 +8,9 @@ extern double square_root(int n);
 
 class Application : public esimp::Application_if {
  public:
-  void run_main() override;
-  void run_thread(esimp::RTOSThread_if *thread, const char *name,
-                  const void *pdata) override;
+  void run_main(esimp::Thread_if *thread) override;
+  void run_thread(esimp::Thread_if *thread, const char *name,
+                  void *pdata) override;
   void run_isr(esimp::IRQ_if *irq) override;
 
  private:
@@ -18,18 +18,18 @@ class Application : public esimp::Application_if {
 
 static Application app;
 static esimp::MCU_if *mcu;
-static esimp::RTOSThread_if *thread1;
-static esimp::RTOSThread_if *thread2;
+static esimp::Thread_if *main_thread;
+static esimp::Thread_if *thread1;
+static esimp::Thread_if *thread2;
 static esimp::Timer_if *timer1;
 
 static int mystatic1;
 static int mystatic2 = 99;
 
-void Application::run_main() {
+void Application::run_main(esimp::Thread_if *thread) {
+  main_thread = thread;
   thread1 = mcu->create_thread("thread1", nullptr);
   thread2 = mcu->create_thread("thread2", nullptr);
-  thread1->start();
-  thread2->start();
   timer1 = mcu->create_timer("timer1");
   timer1->set_period_ns(5e8);
   timer1->set_mode(esimp::TimerMode::Continuous);
@@ -45,15 +45,17 @@ void Application::run_main() {
   for (;;) {
     mcu->log("Main");
     mcu->busy_wait_ns(1e9);
+    thread1->switch_to();
   }
 }
 
-void Application::run_thread(esimp::RTOSThread_if *thread, const char *name,
-                             const void *pdata) {
+void Application::run_thread(esimp::Thread_if *thread, const char *name,
+                             void *pdata) {
   if (thread == thread1) {
     for (;;) {
       mcu->log("Thread 1");
       mcu->busy_wait_ns(5e8);
+      thread2->switch_to();
     }
   } else if (thread == thread2) {
     int count = 0;
@@ -64,6 +66,7 @@ void Application::run_thread(esimp::RTOSThread_if *thread, const char *name,
       if (count >= 5) {
         mcu->exit(esimp::ExitAction::Reset, 0);
       }
+      main_thread->switch_to();
     }
   } else {
     assert(0);
@@ -71,8 +74,8 @@ void Application::run_thread(esimp::RTOSThread_if *thread, const char *name,
 }
 
 void Application::run_isr(esimp::IRQ_if *irq) {
-  irq->clear();
   if (irq == timer1->get_irq()) {
+    timer1->clear_irq();
     mcu->log("Timer1 tick");
   } else {
     mcu->log("Unknown isr");

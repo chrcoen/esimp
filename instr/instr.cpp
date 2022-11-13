@@ -38,8 +38,8 @@ struct InstructionCount : public FunctionPass {
       return false;
     }
 
-    std::cout << "Instrumenting " << filename << ":" << name.str().c_str()
-              << std::endl;
+    // std::cout << "Instrumenting " << filename << ":" << name.str().c_str()
+    //           << std::endl;
 
     std::vector<Type *> paramTypes = {Type::getInt32Ty(Ctx)};
     Type *retType = Type::getVoidTy(Ctx);

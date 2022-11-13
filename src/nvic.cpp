@@ -1,3 +1,8 @@
+/*
+ * SPDX-License-Identifier: Apache-2.0
+ * SPDX-FileCopyrightText: © 2022 Christoph Coenen <chrcoen@gmail.com>
+ */
+
 #include "esimp/platform/nvic.hpp"
 
 #include <assert.h>
@@ -30,6 +35,15 @@ void NVIC::add_irq(IRQ irq) { irqs.push_back(irq); }
 IRQ_if *NVIC::get_irq(const char *name) {
   for (auto &irq : irqs) {
     if (strcmp(irq.get_name(), name) == 0) {
+      return &irq;
+    }
+  }
+  return NULL;
+}
+
+IRQ_if *NVIC::get_irq(int nr) {
+  for (auto &irq : irqs) {
+    if (irq.get_nr() == nr) {
       return &irq;
     }
   }

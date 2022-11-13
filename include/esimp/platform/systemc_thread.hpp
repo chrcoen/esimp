@@ -9,17 +9,6 @@
 
 namespace esimp {
 
-// class SystemcThread;
-
-// class SystemcThreadFactory: public sc_core::sc_module {
-// public:
-//   SC_HAS_PROCESS(SystemcThreadFactory);
-//   SystemcThreadFactory(sc_core::sc_module_name name);
-//   void create(SystemcThread *obj);
-
-// private:
-//   int run(SystemcThread *obj);
-// };
 
 class SystemcThread {
  public:
@@ -29,25 +18,32 @@ class SystemcThread {
     RTOSThread,
   };
 
-  SystemcThread(const char *name, Type type);
+  SystemcThread(const char *parent_name, const char *name, Type type);
   virtual ~SystemcThread();
   virtual int run() = 0;
 
   Type get_type();
   const char *get_name();
+  const char* get_full_name();
+  void kill();
 
   // void set_sc_process(sc_core::sc_process_b *p);
   sc_core::sc_process_b *get_sc_process();
   void spawn();
 
   // static SystemcThreadFactory *factory;
+protected:
+  void set_name_intern(const char *val);
 
- private:
+public:
   int run_thread();
   const Type type;
-  const std::string name;
   sc_core::sc_process_b *process;
   sc_core::sc_process_handle process_handle;
+  std::string parent_name;
+  std::string name;
+  std::string full_name;
+  pthread_t pthread;
 };
 
 } /* namespace esimp */

@@ -10,14 +10,14 @@
 
 namespace esimp {
 
-class RTOSThread : public Context, public RTOSThread_if {
+class RTOSThread : public Context, public Thread_if {
  public:
-  RTOSThread(Update_if *parent, Application_if *app, const char *name,
-             const void *pdata, bool main = false);
+  RTOSThread(Context **active_ctx, const char *parent_name, const char *name, Update_if *parent, Application_if *app, 
+             void *pdata, bool main = false);
   Context *as_context();
 
-  /* RTOSThread_if */
-  void start() override;
+  /* Thread_if */
+  void set_name(const char *name) override;
   void switch_to() override;
 
   /* Context */
@@ -28,8 +28,7 @@ class RTOSThread : public Context, public RTOSThread_if {
  private:
   Update_if *parent;
   Application_if *app;
-  const char *name;
-  const void *pdata;
+  void *pdata;
   bool main;
 };
 

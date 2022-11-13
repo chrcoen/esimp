@@ -9,14 +9,14 @@ add_library(esimp STATIC
     context.cpp
     timer.cpp
     trace.cpp
+    uart.cpp
+    gpio.cpp
 )
 
 
 target_include_directories(esimp PRIVATE
     ../include
-    ${SYSTEMC_INCLUDE}
 )
 
-target_link_directories(esimp PUBLIC ${SYSTEMC_LIB})
-target_link_libraries(esimp systemc pthread dl rt)
+target_link_libraries(esimp systemc)
 

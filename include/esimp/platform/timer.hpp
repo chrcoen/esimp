@@ -11,7 +11,7 @@ namespace esimp {
 
 class Timer : public SystemcThread, public Timer_if {
  public:
-  Timer(const char *name, IRQ_if *irq);
+  Timer(const char *parent_name, const char *name, IRQ_if *irq);
 
   /* SystemcThread */
   int run() override;
@@ -23,6 +23,8 @@ class Timer : public SystemcThread, public Timer_if {
   void set_period_ns(uint64_t val) override;
   uint64_t get_value_ns() override;
   IRQ_if *get_irq() override;
+  void clear_irq() override;
+  void trigger_irq() override;
 
  private:
   IRQ_if *irq_if;

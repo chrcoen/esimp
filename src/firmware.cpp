@@ -1,3 +1,7 @@
+/*
+ * SPDX-License-Identifier: Apache-2.0
+ * SPDX-FileCopyrightText: © 2022 Christoph Coenen <chrcoen@gmail.com>
+ */
 
 #include "esimp/platform/firmware.hpp"
 
@@ -29,8 +33,9 @@ void Firmware::load(MCU_if* mcu) {
 void Firmware::close() {
   assert(firmware != nullptr);
   int res = dlclose(firmware);
-  firmware = nullptr;
+  (void)res;
   assert(res == 0);
+  firmware = nullptr;
 }
 
 Application_if* Firmware::get_application() { return app; }

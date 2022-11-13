@@ -29,8 +29,8 @@ int sc_main(int argc, char* argv[]) {
     mcu0.set_configuration(cfg);
   }
 
-  mcu0.add_irq("timer1");
-  mcu0.add_irq("timer2");
+  mcu0.add_irq(0, "timer1");
+  mcu0.add_irq(1, "timer2");
 
   sc_core::sc_start();
 

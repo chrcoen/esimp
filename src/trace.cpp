@@ -1,3 +1,8 @@
+/*
+ * SPDX-License-Identifier: Apache-2.0
+ * SPDX-FileCopyrightText: © 2022 Christoph Coenen <chrcoen@gmail.com>
+ */
+
 #include "esimp/platform/trace.hpp"
 
 #include <iomanip>
@@ -30,8 +35,9 @@ void msg(const char *level, const char *text) {
   if (s == "context") { return; }
   if (s == "mcu")     { return; }
   if (s == "irq")     { return; }
+  if (s == "isr")     { return; }
 
-  const char *ctx = (context_var != nullptr) ? (*context_var)->get_name() : "-";
+  const char *ctx = ((context_var != nullptr) && (*context_var != nullptr)) ? (*context_var)->get_full_name() : "-";
   cout << fixed << setw(11) << setprecision(6)
        << sc_core::sc_time_stamp().to_seconds() << setw(10) << level
        << std::left << setw(20) << ctx << " " << std::left << setw(20)
@@ -43,7 +49,7 @@ static string thread_name(void *t) {
     return "unknown";
   }
   SystemcThread *sc = static_cast<SystemcThread *>(t);
-  string res = sc->get_name();
+  string res = sc->get_full_name();
   if (sc->get_type() == SystemcThread::Type::ISR) {
     IRQ *irq = static_cast<ISR *>(sc)->get_irq();
     if (irq != nullptr) {

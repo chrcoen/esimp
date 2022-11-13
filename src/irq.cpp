@@ -1,5 +1,6 @@
 /*
  * SPDX-License-Identifier: Apache-2.0
+ * SPDX-FileCopyrightText: © 2022 Christoph Coenen <chrcoen@gmail.com>
  */
 
 #include "esimp/platform/irq.hpp"
@@ -14,13 +15,17 @@ using std::string;
 
 namespace esimp {
 
-IRQ::IRQ(Update_if *p, const char *n)
+IRQ::IRQ(Update_if *p, int nr, const char *n)
     : parent(p),
+      nr(nr),
       name(n),
       prio(0),
       pending(false),
       enabled(false),
-      state(State::Idle) {}
+      state(State::Idle),
+      pdata(nullptr)
+      {
+      }
 
 void IRQ::reset() {
   pending = false;
@@ -41,21 +46,19 @@ void IRQ::disable() {
   parent->update_from_sw();
 }
 
-void IRQ::clear() { pending = false; }
-
-void IRQ::hw_trigger() {
+void IRQ::set_pending(bool val) {
   trace::msg("irq", (string("HW Trigger ") + name).c_str());
-  if (enabled) {
-    pending = true;
+  pending = val;
+  if (enabled && pending) {
     assert(parent != nullptr);
     parent->update_from_hw();
   }
 }
 
-void IRQ::sw_trigger() {
+void IRQ::set_pending_from_sw(bool val) {
   trace::msg("irq", (string("SW Trigger ") + name).c_str());
-  if (enabled) {
-    pending = true;
+  pending = val;
+  if (enabled && pending) {
     assert(parent != nullptr);
     parent->update_from_sw();
   }
@@ -78,5 +81,12 @@ bool IRQ::is_enabled() { return enabled; }
 void IRQ::set_state(State s) { state = s; }
 
 IRQ::State IRQ::get_state() { return state; }
+
+int IRQ::get_nr() { return nr; }
+
+void IRQ::set_pdata(void *d) { pdata = d; }
+
+void* IRQ::get_pdata() { return pdata; }
+
 
 } /* namespace esimp */

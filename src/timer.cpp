@@ -1,3 +1,8 @@
+/*
+ * SPDX-License-Identifier: Apache-2.0
+ * SPDX-FileCopyrightText: © 2022 Christoph Coenen <chrcoen@gmail.com>
+ */
+
 #include "esimp/platform/timer.hpp"
 
 #include <assert.h>
@@ -5,8 +10,8 @@
 
 namespace esimp {
 
-Timer::Timer(const char *name, IRQ_if *irq)
-    : SystemcThread(name, SystemcThread::Type::Hardware),
+Timer::Timer(const char *parent_name, const char *name, IRQ_if *irq)
+    : SystemcThread(parent_name, name, SystemcThread::Type::Hardware),
       irq_if(irq),
       mode(TimerMode::SingleShot),
       enabled(false) {}
@@ -23,7 +28,7 @@ int Timer::run() {
     wait(period, sc_core::SC_NS, wakeup);
     if (enabled) {
       assert(irq_if != nullptr);
-      irq_if->hw_trigger();
+      irq_if->set_pending(true);
     }
     if (mode == TimerMode::SingleShot) {
       enabled = false;
@@ -49,6 +54,14 @@ void Timer::set_period_ns(uint64_t val) { period = val; }
 
 uint64_t Timer::get_value_ns() {
   return (uint64_t)(sc_core::sc_time_stamp() - t_start).to_seconds() * 1e9;
+}
+
+void Timer::clear_irq() {
+  irq_if->set_pending_from_sw(false);
+}
+
+void Timer::trigger_irq() {
+  irq_if->set_pending_from_sw(true);
 }
 
 } /* namespace esimp */

@@ -12,7 +12,7 @@ namespace esimp {
 
 class ISR : public Context {
  public:
-  ISR(const char *name, Update_if *parent, Application_if *app_if);
+  ISR(Context **active_ctx, const char *parent_name, const char *name, Update_if *parent, Application_if *app_if);
   int run() override;
   void set_irq(IRQ *irq);
   IRQ *get_irq();

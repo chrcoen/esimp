@@ -8,5 +8,6 @@ target_include_directories(platform PRIVATE
     ${SYSTEMC_INCLUDE}
 )
 
-target_link_libraries(platform esimp)
+target_link_libraries(platform esimp systemc pthread dl rt)
+
 

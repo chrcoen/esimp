@@ -1,3 +1,8 @@
+/*
+ * SPDX-License-Identifier: Apache-2.0
+ * SPDX-FileCopyrightText: © 2022 Christoph Coenen <chrcoen@gmail.com>
+ */
+
 #include <systemc>
 
 #include "esimp/interface/platform_if.hpp"
@@ -14,8 +19,6 @@ int sc_main(int argc, char* argv[]) {
   }
 
   esimp::trace::init();
-  // esimp::SystemcThreadFactory thread_factory("thread_factory");
-  // esimp::SystemcThread::factory = &thread_factory;
   esimp::MCU mcu0("mcu0");
   esimp::Firmware fw(argv[1]);
 
@@ -27,8 +30,8 @@ int sc_main(int argc, char* argv[]) {
     cfg.time_quantum_ns = 100e3;
     mcu0.set_configuration(cfg);
   }
-  mcu0.add_irq("timer1");
-  mcu0.add_irq("timer2");
+  mcu0.add_irq(0, "timer1");
+  mcu0.add_irq(1, "timer2");
 
   sc_core::sc_start();
 

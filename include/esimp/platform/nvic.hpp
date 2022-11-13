@@ -22,6 +22,7 @@ class NVIC : public NVIC_if {
   int get_primask() override;
   int get_basepri() override;
   IRQ_if *get_irq(const char *name) override;
+  IRQ_if *get_irq(int nr) override;
 
   void add_irq(IRQ irq);
   IRQ *active_irq();

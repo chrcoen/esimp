@@ -12,7 +12,7 @@ class Update_if {
  public:
   virtual void update_from_hw() = 0;
   virtual void update_from_sw() = 0;
-  virtual void switch_thread(RTOSThread_if *thread) = 0;
+  virtual void switch_thread(Thread_if *thread) = 0;
 };
 
 } /* namespace esimp */

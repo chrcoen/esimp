@@ -8,34 +8,27 @@
 
 namespace esimp {
 
-// class RTOSThread;
-// class ISR;
 
 class Context : public SystemcThread {
  public:
-  // enum class Type {
-  //   RTOSThread,
-  //   ISR
-  // };
 
-  Context(const char *name, SystemcThread::Type t);
-  // RTOSThread* as_rtos_thread();
-  // ISR* as_isr();
-  // bool is_isr();
-  // bool is_rtos_thread();
+
+  Context(Context **active_ctx, const char *parent_name, const char *name, SystemcThread::Type t);
 
   uint64_t get_instruction_count();
   void clear_instruction_count();
   void increment_instruction_count(uint64_t dn);
 
-  void wait(uint64_t t_ns, Context **active_context);
+  void wait(uint64_t t_ns);
   void suspend();
   void activate();
+  void abort(Context *last_context);
 
  protected:
-  // const Type type;
+  Context **active_context;
   sc_core::sc_event wakeup;
   uint64_t instruction_count;
+  bool terminate;
 };
 
 } /* namespace esimp */

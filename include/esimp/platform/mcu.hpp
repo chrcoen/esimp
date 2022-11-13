@@ -38,20 +38,27 @@ class MCU : public sc_core::sc_module, public MCU_if, public Update_if {
   void busy_wait_ns(uint64_t t_ns) override;
   uint64_t get_timestamp_ns() override;
   NVIC_if *get_nvic() override;
-  RTOSThread_if *create_thread(const char *name, const void *pdata) override;
+  Thread_if *create_thread(const char *name, void *pdata) override;
   Timer_if *create_timer(const char *name) override;
+  UART_if *get_uart(const char *name) override;
+  GpioPin_if *get_gpio_pin(const char *port, int pin) override;
   void exit(ExitAction action, unsigned int fw_index) override;
+  void abort_thread(Thread_if *thread, Thread_if *next) override;
   void log(const char *msg) override;
+  bool is_in_isr() override;
 
   /* Update_if */
   void update_from_hw() override;
   void update_from_sw() override;
-  void switch_thread(RTOSThread_if *thread) override;
+  void switch_thread(Thread_if *thread) override;
 
   void set_configuration(const Configuration &c);
   Configuration get_configuration();
   void add_firmware(Firmware *fw);
-  void add_irq(const char *name);
+  void add_irq(int nr, const char *name);
+  void add_uart(int irq_nr, const char *name, UART_if *uart);
+  void add_gpio_pin(int irq_nr, const char *port, int pin, GpioPin_if *gpio_pin);
+
 
  private:
   NVIC nvic;
@@ -70,6 +77,8 @@ class MCU : public sc_core::sc_module, public MCU_if, public Update_if {
   std::vector<Timer *> timers;
   std::vector<IRQ *> irqs;
   sc_core::sc_event reset_event;
+  std::map<std::string, UART_if*> uarts;
+  std::map<std::string, std::map<int, GpioPin_if*> > gpios;
 
   ISR *get_isr(unsigned int prio);
   void update(bool from_hw);

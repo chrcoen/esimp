@@ -8,5 +8,5 @@ target_include_directories(utest_platform PRIVATE
     ${SYSTEMC_INCLUDE}
 )
 
-target_link_libraries(utest_platform esimp)
+target_link_libraries(utest_platform esimp systemc pthread dl rt)
 

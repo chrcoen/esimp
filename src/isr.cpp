@@ -1,3 +1,8 @@
+/*
+ * SPDX-License-Identifier: Apache-2.0
+ * SPDX-FileCopyrightText: © 2022 Christoph Coenen <chrcoen@gmail.com>
+ */
+
 #include "esimp/platform/isr.hpp"
 
 #include <assert.h>
@@ -10,8 +15,8 @@ namespace esimp {
 
 using std::string;
 
-ISR::ISR(const char *name, Update_if *parent, Application_if *app)
-    : Context(name, SystemcThread::Type::ISR),
+ISR::ISR(Context **active_ctx, const char *parent_name, const char *name, Update_if *parent, Application_if *app)
+    : Context(active_ctx, parent_name, name, SystemcThread::Type::ISR),
       parent(parent),
       app_if(app),
       irq(nullptr) {}

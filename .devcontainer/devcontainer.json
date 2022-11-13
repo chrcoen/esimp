@@ -6,7 +6,8 @@
         "trond-snekvik.devicetree",
         "trond-snekvik.kconfig-lang",
         "editorconfig.editorconfig",
-        "mhutchie.git-graph"
+        "mhutchie.git-graph",
+        "twxs.cmake"
     ],
     "remoteUser": "user",
     "remoteEnv": {"SHELL": "/bin/bash"},
